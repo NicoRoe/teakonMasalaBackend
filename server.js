@@ -1,5 +1,5 @@
 const express = require('express');
-const client = require('./db-client');
+const client = require('./db-pool');
 const teaRouter = require('./routes/teas.js');
 const app = express()
 const PORT = process.env.PORT || 4000; 
