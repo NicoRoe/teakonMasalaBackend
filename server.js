@@ -1,6 +1,5 @@
 const express = require('express');
-const client = require('./db-pool');
-const teaRouter = require('./routes/teas.js');
+const teeRouter = require('./routes/teas.js');
 const app = express()
 const PORT = process.env.PORT || 4000; 
 
@@ -17,5 +16,6 @@ app.get('/', (req, res) => {
 })
 
 // teas-routing 	- require from /routes/teas.js		<- middlewares - from /controller/teas.js  
-app.use('/teas', teaRouter);
-
+app.use('/teeapi', teeRouter);
+// app.use('/shopapi', shopRouter);
+// app.use('/accessoriesapi', accessoriesRouter);

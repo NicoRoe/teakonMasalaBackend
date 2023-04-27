@@ -11,9 +11,25 @@ const {
 
 //  app.use('/teas', teaRouter);  ... in server.js
 
-teaRouter.get('/', getTeeArten);						//  teas/
+teaRouter.get('/', getTeeArten);									//  
 
-teaRouter.get('/category/:teaTypeId', getTeesOneArt);		//  teas/<schwarzer_tee_id>
+teaRouter.get('/teearten', getTeeArten);
+teaRouter.get('/teearten/:teeArtId', getTeesOneArt);		//  teearten/:teeArtname | teearten/schwarzer-tee   
+
+teaRouter.get('/anbaugebiete', getTeeArten);
+teaRouter.get('/benefits', getTeeArten);
+teaRouter.get('/aromen', getTeeArten);
+teaRouter.get('/koffeein', getTeeArten);
+teaRouter.get('/tees', getTeeArten);
+teaRouter.get('/tees/:id', getTeeArten);						//  teearten/:teeArtname | teearten/schwarzer-tee
+teaRouter.get('/equipment', getTeeArten);
+teaRouter.get('/search', getTeeArten);
+
+
+
+
+
+teaRouter.get('/category/:teaTypeId', getTeesOneArt);		
 
 module.exports = teaRouter;		// "api" - '/teas' in server.js
 
@@ -50,5 +66,20 @@ request to backend:
 ====== backend: 
 
 teaRouter.get('/:teeArtId', getTeesOneArt);
+
+/teearten
+/teearten/:id
+/anbaugebiete
+/benefits
+/aromen
+/koffeein
+/tees
+/tees/:id
+/equipment
+/search
+
+
+objekte:
+teeobjekt join aus allen tabeln
 
 */
