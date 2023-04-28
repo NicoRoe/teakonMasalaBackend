@@ -33,15 +33,15 @@ const getTeeArten = async (req, res) => {
 	SELECT 
 		 
 		tee.id AS teeid, 
-		tee.name AS teename, 
-
 		anbaugebiete.id AS anbaugebieteid,
-		anbaugebiete.name AS anbaugebietename,
-
+		benefits.id AS benefitsid,
 		nebenwirkungen.id AS nebenwirkungenid,
-		nebenwirkungen.name AS nebenwirkungenname,
-
 		aromen.id AS aromenid,
+
+		tee.name AS teename, 
+		anbaugebiete.name AS anbaugebietename,
+		benefits.name AS benefitsname,
+		nebenwirkungen.name AS nebenwirkungenname,
 		aromen.name AS aromenname
 
 		FROM tee
@@ -59,19 +59,52 @@ const getTeeArten = async (req, res) => {
 		  JOIN aromen ON aromen.id = join_tee_aromen.aroma_id 
 
 
-
 		WHERE tee.id = $1`, [tee_id] );
+
 		console.log('teeAllDeteils', teeAllDeteils.rows);
 
 
 
 
+/* 		
+		const arr = [{key1: 'value1'}, {key2: 'value2'}, {key1: 'value3', key2: 'value4'}];
+		const result = arr.reduce((acc, curr) => {
+		  Object.keys(curr).forEach(key => {
+			 acc[key] = acc[key] || [];
+			 acc[key].push(curr[key]);
+		  });
+		  return acc;
+		}, {});
+		console.log(result);
+		{
+			key1: ['value1', 'value3'],
+			key2: ['value2', 'value4']
+		}
+ */
+		
+		const resultTee = teeAllDeteils.rows.reduce((acc, curr) => {
+		  Object.keys(curr).forEach(key => {
+			 acc[key] = acc[key] || [];
+			 acc[key].push(curr[key]);
+		  });
+		  return acc;
+		}, {});
+
+		for (let key in resultTee) {
+			resultTee[key] = resultTee[key].filter((item, index, arr) => {
+			  return arr.indexOf(item) === index;
+			});
+		 }
+
+		console.log(resultTee);
+
+
 		res.json( { 
+			teeAllDeteils: resultTee,
 			teeArtenArray: teeArtenArray.rows, 
 			teesArray: teesArray.rows,
 			anbaugebieteArray: anbaugebieteArray.rows,
 			teesInAnbaugebietArray: teesInAnbaugebietArray.rows,
-			teeAllDeteils: teeAllDeteils.rows,
 		} );
 
 		// res.json( [teeArtenArray.rows, teesArray.rows] );

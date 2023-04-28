@@ -9,7 +9,7 @@ const {
 } = require('../controllers/teas.js');
 
 
-//  app.use('/teas', teaRouter);  ... in server.js
+//  app.use('/teeapi', teaRouter);  ... in server.js
 
 teaRouter.get('/', getTeeArten);									//  
 
