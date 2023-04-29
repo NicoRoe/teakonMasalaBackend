@@ -28,7 +28,7 @@ const getTeeArten = async (req, res) => {
 
 // https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-inner-join/
 		
-	const tee_id =  2;
+	const tee_id =  3;
 	const teeAllDeteils = await pool.query(`
 	SELECT 
 		 
@@ -82,7 +82,7 @@ const getTeeArten = async (req, res) => {
 		}
  */
 		
-		const resultTee = teeAllDeteils.rows.reduce((acc, curr) => {
+		const teeObj = teeAllDeteils.rows.reduce((acc, curr) => {
 		  Object.keys(curr).forEach(key => {
 			 acc[key] = acc[key] || [];
 			 acc[key].push(curr[key]);
@@ -90,17 +90,35 @@ const getTeeArten = async (req, res) => {
 		  return acc;
 		}, {});
 
-		for (let key in resultTee) {
-			resultTee[key] = resultTee[key].filter((item, index, arr) => {
-			  return arr.indexOf(item) === index;
+		/* 
+		"teeAllDeteils": {
+			"teename": 				[ "Assam",    "Assam",   "Assam",      "Assam",    "Assam",   "Assam",     ],
+			"anbaugebietename":	[ "Indien",   "Indien",  "Indien",     "Indien",   "Indien",  "Indien",    ],
+			"benefitsname": 		[ "fördernd", "stärken", "reduzieren", "fördernd", "stärken", "reduzieren" ],
+			"aromenname": 			[ "malzig",   "malzig",  "malzig",     "kfäftig",  "kfäftig", "kfäftig",   ]
+		}
+			https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#remove_duplicate_elements_from_an_array
+
+			var.1
+		*/
+
+		for (let key in teeObj) {
+			teeObj[key] = [...new Set(teeObj[key])];
+		}
+		console.log(teeObj);
+
+		/* 	
+		var.2 - remove_duplicate_elements_from_an_array
+		for (let key in teeObj) {
+			teeObj[key] = teeObj[key].filter((item, index, arr) => {
+				return arr.indexOf(item) === index;
 			});
 		 }
-
-		console.log(resultTee);
-
+		console.log(teeObj);
+		*/
 
 		res.json( { 
-			teeAllDeteils: resultTee,
+			teeAllDeteils: teeObj,
 			teeArtenArray: teeArtenArray.rows, 
 			teesArray: teesArray.rows,
 			anbaugebieteArray: anbaugebieteArray.rows,
