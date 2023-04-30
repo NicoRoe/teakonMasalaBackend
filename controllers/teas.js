@@ -33,31 +33,46 @@ const getTeeArten = async (req, res) => {
 	SELECT 
 		 
 		tee.id AS teeid, 
-		anbaugebiete.id AS anbaugebieteid,
-		benefits.id AS benefitsid,
-		nebenwirkungen.id AS nebenwirkungenid,
-		aromen.id AS aromenid,
-
 		tee.name AS teename, 
+
+		attribute.id AS attributeid, 
+		attribute.name AS attributename,
+
+		anbaugebiete.id AS anbaugebieteid,
 		anbaugebiete.name AS anbaugebietename,
+
+		aromen.id AS aromenid,
+		aromen.name AS aromenname,
+
+		benefits.id AS benefitsid,
 		benefits.name AS benefitsname,
+
+		nebenwirkungen.id AS nebenwirkungenid,
 		nebenwirkungen.name AS nebenwirkungenname,
-		aromen.name AS aromenname
+
+		naerhstoffe.id AS naerhstoffeid,
+		naerhstoffe.name AS naerhstoffename
 
 		FROM tee
 
-		  JOIN join_tee_anbaugebiete ON join_tee_anbaugebiete.tee_id = tee.id 
-		  JOIN anbaugebiete ON anbaugebiete.id = join_tee_anbaugebiete.anbaugebiet_id 
+			JOIN join_tee_attribute ON tee.id = join_tee_attribute.tee_id 
+			JOIN attribute ON attribute.id = join_tee_attribute.attribut_id 
 
-		  JOIN join_tee_benefits ON tee.id = join_tee_benefits.tee_id 
-		  JOIN benefits ON benefits.id = join_tee_benefits.benefit_id 
+			JOIN join_tee_anbaugebiete ON join_tee_anbaugebiete.tee_id = tee.id 
+			JOIN anbaugebiete ON anbaugebiete.id = join_tee_anbaugebiete.anbaugebiet_id 
 
-		  JOIN join_tee_nebenwirkungen ON tee.id = join_tee_nebenwirkungen.tee_id 
-		  JOIN nebenwirkungen ON nebenwirkungen.id = join_tee_nebenwirkungen.nebenwirkung_id 
+			JOIN join_tee_aromen ON tee.id = join_tee_aromen.tee_id 
+			JOIN aromen ON aromen.id = join_tee_aromen.aroma_id 
 
-		  JOIN join_tee_aromen ON tee.id = join_tee_aromen.tee_id 
-		  JOIN aromen ON aromen.id = join_tee_aromen.aroma_id 
+			JOIN join_tee_benefits ON tee.id = join_tee_benefits.tee_id 
+			JOIN benefits ON benefits.id = join_tee_benefits.benefit_id 
 
+			JOIN join_tee_nebenwirkungen ON tee.id = join_tee_nebenwirkungen.tee_id 
+			JOIN nebenwirkungen ON nebenwirkungen.id = join_tee_nebenwirkungen.nebenwirkung_id 
+
+			JOIN join_tee_naehrstoffe ON tee.id = join_tee_naehrstoffe.tee_id 
+			JOIN naerhstoffe ON naerhstoffe.id = join_tee_naehrstoffe.naehrstoff_id 
+	
 
 		WHERE tee.id = $1`, [tee_id] );
 
@@ -92,10 +107,11 @@ const getTeeArten = async (req, res) => {
 
 		/* 
 		"teeAllDeteils": {
-			"teename": 				[ "Assam",    "Assam",   "Assam",      "Assam",    "Assam",   "Assam",     ],
-			"anbaugebietename":	[ "Indien",   "Indien",  "Indien",     "Indien",   "Indien",  "Indien",    ],
-			"benefitsname": 		[ "fördernd", "stärken", "reduzieren", "fördernd", "stärken", "reduzieren" ],
-			"aromenname": 			[ "malzig",   "malzig",  "malzig",     "kfäftig",  "kfäftig", "kfäftig",   ]
+			"teename": 				[ "Assam",    "Assam",   "Assam",      "Assam",    "Assam",   "Assam", 		... ],
+			"anbaugebietename":	[ "Indien",   "Indien",  "Indien",     "Indien",   "Indien",  "Indien", 	... ],
+			"benefitsname": 		[ "fördernd", "stärken", "reduzieren", "fördernd", "stärken", "reduzieren" ... ],
+			"aromenname": 			[ "malzig",   "malzig",  "malzig",     "kfäftig",  "kfäftig", "kfäftig",   ... ],
+			...
 		}
 			https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#remove_duplicate_elements_from_an_array
 
