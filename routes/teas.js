@@ -5,37 +5,44 @@ const teaRouter = express.Router();
 
 const {
   getTeeArten,			
+  getKriterien,
+  getTeeArt,
+  getTee,
+  getTeesInAnbaugebiet,
+  getAnbaugebiete,
   getTeesOneArt,
+  getTees,
 } = require('../controllers/teas.js');
 
 
-//  app.use('/teeapi', teaRouter);  ... in server.js
+// ...in server.js - app.use('/teeapi', teaRouter);  
 
-teaRouter.get('/', getTeeArten);									//  
+// teaRouter.get('/', getTeeArten);								//  /teeapi/
+
+teaRouter.get('/kriterien', getTeeArten, getAnbaugebiete, );				//  
+
+teaRouter.get('/tees', getTees);
+teaRouter.get('/tees/:tee_id', getTee);						// frontend SEO:  tees/:teeName | tees/darjeeling
+teaRouter.get('/tees/anbaugebiet/:anbaugebiet_id', getTeesInAnbaugebiet);
+teaRouter.get('/tees/teeart/:teeart_id', getTeesOneArt);		// frontend SEO:  tees/teeart/:teeArtName | tees/teeart/schwarzer-tee  
+
+// teaRouter.get('/attribute', getAttribute);   // koffeinhaltig - koffeinfrei
 
 teaRouter.get('/teearten', getTeeArten);
-teaRouter.get('/teearten/:teeArtId', getTeesOneArt);		//  teearten/:teeArtname | teearten/schwarzer-tee   
+teaRouter.get('/teearten/:teeart_id', getTeeArt);		// frontend SEO:  teearten/:teeArtname | teearten/schwarzer-tee   
 
-teaRouter.get('/anbaugebiete', getTeeArten);
-teaRouter.get('/benefits', getTeeArten);
-teaRouter.get('/aromen', getTeeArten);
-teaRouter.get('/koffeein', getTeeArten);
-teaRouter.get('/tees', getTeeArten);
-teaRouter.get('/tees/:id', getTeeArten);						//  teearten/:teeArtname | teearten/schwarzer-tee
-teaRouter.get('/equipment', getTeeArten);
-teaRouter.get('/search', getTeeArten);
+teaRouter.get('/anbaugebiete', getAnbaugebiete);
 
+// teaRouter.get('/benefits', getBenefits);
+// teaRouter.get('/aromen', getAromen);
+
+// teaRouter.get('/equipment', getEquipment);
+// teaRouter.get('/search', getSearch);
 
 
 
-
-teaRouter.get('/category/:teaTypeId', getTeesOneArt);		
 
 module.exports = teaRouter;		// "api" - '/teas' in server.js
-
-
-
-
 
 
 /* 
