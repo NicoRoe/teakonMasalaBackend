@@ -1,10 +1,10 @@
 const pool  = require("../db-pool");
 
-
+// ----- /teearten
 const getTeeArten = async (req, res) => {
 
 	const { teeart_id } = req.params;
-	console.log('params:', req.params);
+	// console.log('params:', req.params);
 
 	try {
 
@@ -25,10 +25,11 @@ const getTeeArten = async (req, res) => {
  };
 
 
+ // ----- /teearten/:teeart_id
  const getTeeArt = async (req, res) => {
 
 	const { teeart_id } = req.params;
-	console.log('params:', req.params);
+	// console.log('params:', req.params);
 
 	try {
 
@@ -52,8 +53,7 @@ const getTeeArten = async (req, res) => {
 
 
 
-
-
+// ----- /anbaugebiete
 const getAnbaugebiete = async (req, res) => {
 
 	try {
@@ -71,26 +71,79 @@ const getAnbaugebiete = async (req, res) => {
 
 
 
-
-
-
-const getTeesInAnbaugebiet = async (req, res) => {
-
-	const { anbaugebiet_id } = req.params;
-	console.log('params:', req.params);
+// ----- /benefits
+const getBenefits = async (req, res) => {
 
 	try {
 
-		const teesInAnbaugebietArray = await pool.query(`
+		const benefitsArray = await pool.query('SELECT * FROM benefits');
+		//console.log('anbaugebieteArray', anbaugebieteArray.rows);
+
+		res.json( { benefitsArray: benefitsArray.rows } );
+
+	} catch (err) {
+		console.log(err.message);
+		res.sendStatus(500);
+	}
+};
+
+// ----- /aromen
+const getAromen = async (req, res) => {
+
+	try {
+
+		const aromenArray = await pool.query('SELECT * FROM aromen');
+		//console.log('anbaugebieteArray', anbaugebieteArray.rows);
+
+		res.json( { aromenArray: aromenArray.rows } );
+
+	} catch (err) {
+		console.log(err.message);
+		res.sendStatus(500);
+	}
+};
+
+
+// ----- /attribute
+const getAttribute = async (req, res) => {
+
+	try {
+
+		const attributeArray = await pool.query('SELECT * FROM attribute');
+		//console.log('anbaugebieteArray', anbaugebieteArray.rows);
+
+		res.json( { attributeArray: attributeArray.rows } );
+
+	} catch (err) {
+		console.log(err.message);
+		res.sendStatus(500);
+	}
+};
+
+
+
+
+// ===== tees ============================================================
+
+
+// ----- /tees/anbaugebiet/:anbaugebiet_id
+const getTeesOneAnbaugebiet = async (req, res) => {
+
+	const { anbaugebiet_id } = req.params;
+	//console.log('params:', req.params);
+
+	try {
+
+		const teesOneAnbaugebietArray = await pool.query(`
 		SELECT tee.id, tee.name, tee.beschreibung, tee.zubereitung 
 			FROM tee 
 			JOIN join_tee_anbaugebiete ON tee.id = join_tee_anbaugebiete.tee_id 
 			JOIN anbaugebiete ON anbaugebiete.id = join_tee_anbaugebiete.anbaugebiet_id 
 			WHERE anbaugebiete.id = $1`, [anbaugebiet_id] );
 
-		console.log('teesInAnbaugebietArray', teesInAnbaugebietArray.rows);
+		// console.log('teesOneAnbaugebietArray', teesOneAnbaugebietArray.rows);
 
-		res.json( { teesInAnbaugebietArray: teesInAnbaugebietArray.rows } );
+		res.json( { teesOneAnbaugebietArray: teesOneAnbaugebietArray.rows } );
 
 
 		// res.json( [teeArtenArray.rows, teesArray.rows] );
@@ -102,38 +155,10 @@ const getTeesInAnbaugebiet = async (req, res) => {
 };
 
 
-const getKriterien = async (req, res) => {
-	const { teeart_id } = req.params;
-	console.log('params:', req.params);
-
-	try {
-
-		// Serial - Chaining await Flow
-		const teeArtenArray = await pool.query('SELECT * FROM tee_arten');
-		//console.log('teeArtenArray', teeArtenArray.rows);
-
-		const teesArray = await pool.query('SELECT * FROM tee');
-		//console.log('teesArray', teesArray.rows);
-
-		res.json( { 
-			teeArtenArray: teeArtenArray.rows, 
-			teesArray: teesArray.rows,
-			
-		} );
-
-		// res.json( [teeArtenArray.rows, teesArray.rows] );
-
-	} catch (err) {
-		console.log(err.message);
-		res.sendStatus(500);
-	}
-
-		// res.send('Hello /teeapi !');
-};
-
+// ----- /tees/anbaugebiet/:anbaugebiet_id
  const getTeesOneArt = async (req, res) => {
 	const { teeart_id } = req.params;
-	console.log('params:', req.params);
+	// console.log('params:', req.params);
 
 	try {
 
@@ -154,11 +179,9 @@ const getKriterien = async (req, res) => {
 		// res.send('Hello /teeapi !');
  };
 
- 
- 
- 
- 
- const getTees = async (req, res) => {
+
+// ----- /tees
+const getTees = async (req, res) => {
 
 	try {
 		const teesArray = await pool.query('SELECT * FROM tee');
@@ -179,11 +202,11 @@ const getKriterien = async (req, res) => {
 
 
 
-
- const getTee = async (req, res) => {
+// ----- /tees/:tee_id
+const getTee = async (req, res) => {
 
 	const { tee_id } = req.params;
-	console.log('params:', req.params);
+	// console.log('params:', req.params);
 
 	// https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-inner-join/
 
@@ -297,7 +320,41 @@ const getKriterien = async (req, res) => {
 		console.log(err.message);
 		res.sendStatus(500);
 	}
- };
+};
+
+
+
+ const getKriterien = async (req, res) => {
+	const { teeart_id } = req.params;
+	console.log('params:', req.params);
+
+	try {
+
+		// Serial - Chaining await Flow
+		const teeArtenArray = await pool.query('SELECT * FROM tee_arten');
+		//console.log('teeArtenArray', teeArtenArray.rows);
+
+		const teesArray = await pool.query('SELECT * FROM tee');
+		//console.log('teesArray', teesArray.rows);
+
+		res.json( { 
+			teeArtenArray: teeArtenArray.rows, 
+			teesArray: teesArray.rows,
+			
+		} );
+
+		// res.json( [teeArtenArray.rows, teesArray.rows] );
+
+	} catch (err) {
+		console.log(err.message);
+		res.sendStatus(500);
+	}
+
+		// res.send('Hello /teeapi !');
+};
+
+
+
 
 /* 
 // test connect
@@ -318,6 +375,14 @@ client.query('SELECT * FROM tee', function(err, result) {
 	getTee,
 	getKriterien,
 	getTeeArt,
-	getTeesInAnbaugebiet,
+	getTeesOneAnbaugebiet,
 	getAnbaugebiete,
+	getBenefits,
+	getAromen,
+	getAttribute,
  };
+
+
+
+
+
