@@ -4,16 +4,17 @@ const express = require('express');
 const teaRouter = express.Router(); 
 
 const {
-  getTeeArten,			
-  getTeeArt,
-  getTee,
-  getAnbaugebiete,
-  getTeesOneArt,
-  getTees,
-  getTeesOneAnbaugebiet,
-  getBenefits,
-  getAromen,
-  getAttribute,
+	getSuchKriterien,
+	getTees,
+	getTee,
+	getTeesOneAnbaugebiet,
+	getTeesOneArt,
+	getTeeArten,
+	getTeeArt,
+	getAnbaugebiete,
+	getBenefits,
+	getAromen,
+	getAttribute,
 } = require('../controllers/teas.js');
 
 
@@ -21,14 +22,12 @@ const {
 
 // teaRouter.get('/', getTeeArten);								//  /teeapi/
 
-teaRouter.get('/suchkriterien', getTeeArten, getAnbaugebiete, );				//  
+teaRouter.get('/suchkriterien', getSuchKriterien);		//  
 
 teaRouter.get('/tees', getTees);
 teaRouter.get('/tees/:tee_id', getTee);						// frontend SEO:  tees/:teeName | tees/darjeeling
 teaRouter.get('/tees/anbaugebiet/:anbaugebiet_id', getTeesOneAnbaugebiet);
 teaRouter.get('/tees/teeart/:teeart_id', getTeesOneArt);		// frontend SEO:  tees/teeart/:teeArtName | tees/teeart/schwarzer-tee  
-
-teaRouter.get('/attribute', getAttribute);   // koffeinhaltig - koffeinfrei
 
 teaRouter.get('/teearten', getTeeArten);
 teaRouter.get('/teearten/:teeart_id', getTeeArt);		// frontend SEO:  teearten/:teeArtname | teearten/schwarzer-tee   
@@ -37,6 +36,9 @@ teaRouter.get('/anbaugebiete', getAnbaugebiete);
 
 teaRouter.get('/benefits', getBenefits);
 teaRouter.get('/aromen', getAromen);
+
+teaRouter.get('/attribute', getAttribute);   			// koffeinhaltig - koffeinfrei
+
 
 // teaRouter.get('/equipment', getEquipment);
 // teaRouter.get('/search', getSearch);

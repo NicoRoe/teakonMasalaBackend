@@ -1,10 +1,59 @@
 const pool  = require("../db-pool");
 
+
+
+// ----- /suchkriterien
+const getSuchKriterien = async (req, res) => {
+
+	try {
+
+		// Serial - Chaining await Flow
+		const teeArtenArray = await pool.query('SELECT * FROM tee_arten');
+		//console.log('teeArtenArray', teeArtenArray.rows);
+
+		const anbaugebieteArray = await pool.query('SELECT * FROM anbaugebiete');
+		//console.log('anbaugebieteArray', anbaugebieteArray.rows);
+
+		const benefitsArray = await pool.query('SELECT * FROM benefits');
+		//console.log('anbaugebieteArray', anbaugebieteArray.rows);
+
+		const aromenArray = await pool.query('SELECT * FROM aromen');
+		//console.log('anbaugebieteArray', anbaugebieteArray.rows);
+
+		const attributeArray = await pool.query('SELECT * FROM attribute');
+		//console.log('anbaugebieteArray', anbaugebieteArray.rows);
+
+		res.json( { 
+			teeArtenArray: teeArtenArray.rows, 
+			anbaugebieteArray: anbaugebieteArray.rows, 
+			benefitsArray: benefitsArray.rows, 
+			aromenArray: aromenArray.rows, 
+			attributeArray: attributeArray.rows, 
+		} );
+
+		// res.json( [teeArtenArray.rows, teesArray.rows] );
+
+	} catch (err) {
+		console.log(err.message);
+		res.sendStatus(500);
+	}
+
+		// res.send('Hello /teeapi !');
+};
+
+
+
+
+
+
+
+
 // ----- /teearten
 const getTeeArten = async (req, res) => {
 
 	const { teeart_id } = req.params;
 	// console.log('params:', req.params);
+	console.log('Request URL:', req.originalUrl);
 
 	try {
 
@@ -54,7 +103,7 @@ const getTeeArten = async (req, res) => {
 
 
 // ----- /anbaugebiete
-const getAnbaugebiete = async (req, res) => {
+const getAnbaugebiete = async (req, res, next) => {
 
 	try {
 
@@ -323,38 +372,6 @@ const getTee = async (req, res) => {
 };
 
 
-
- const getKriterien = async (req, res) => {
-	const { teeart_id } = req.params;
-	console.log('params:', req.params);
-
-	try {
-
-		// Serial - Chaining await Flow
-		const teeArtenArray = await pool.query('SELECT * FROM tee_arten');
-		//console.log('teeArtenArray', teeArtenArray.rows);
-
-		const teesArray = await pool.query('SELECT * FROM tee');
-		//console.log('teesArray', teesArray.rows);
-
-		res.json( { 
-			teeArtenArray: teeArtenArray.rows, 
-			teesArray: teesArray.rows,
-			
-		} );
-
-		// res.json( [teeArtenArray.rows, teesArray.rows] );
-
-	} catch (err) {
-		console.log(err.message);
-		res.sendStatus(500);
-	}
-
-		// res.send('Hello /teeapi !');
-};
-
-
-
 /* 
 // test connect
 client.query('SELECT * FROM tee', function(err, result) {
@@ -368,13 +385,13 @@ client.query('SELECT * FROM tee', function(err, result) {
 */
 
  module.exports = {
+	getSuchKriterien,
 	getTees,
-	getTeeArten,
-	getTeesOneArt,
 	getTee,
-	getKriterien,
-	getTeeArt,
 	getTeesOneAnbaugebiet,
+	getTeesOneArt,
+	getTeeArten,
+	getTeeArt,
 	getAnbaugebiete,
 	getBenefits,
 	getAromen,
