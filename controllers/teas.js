@@ -171,6 +171,11 @@ const getAttribute = async (req, res) => {
 
 
 // ----- /tees
+
+
+ 
+// var.1 - tees ohne join-deteils 
+
 const getTees = async (req, res) => {
 
 	try {
@@ -187,6 +192,63 @@ const getTees = async (req, res) => {
 	}
 	// res.send('Hello /teeapi !');
 };
+
+
+// var.2 - inklusiv join-deteils
+const getTees1 = async (req, res) => {
+
+	try {
+		const teesAllDeteils = await pool.query(`SELECT 
+			
+		tee.id AS teeid, 
+		tee.name AS teename,
+		tee.beschreibung,
+		tee.zubereitung,
+		tee.image, 
+
+		aromen.id AS aromenid,
+		aromen.name AS aromenname
+
+
+		FROM tee
+
+			INNER JOIN join_tee_aromen ON tee.id = join_tee_aromen.tee_id 
+			INNER JOIN aromen ON aromen.id = join_tee_aromen.aroma_id 
+
+
+		`);
+
+
+		const teeObj = teesAllDeteils.rows.reduce((acc, curr) => {
+			Object.keys(curr).forEach(key => {
+			  acc[key] = acc[key] || [];
+			  acc[key].push(curr[key]);
+			});
+			return acc;
+		 }, {});
+
+
+		// var.1 - remove_duplicate_elements_from_an_array
+		for (let key in teeObj) {
+			teeObj[key] = [...new Set(teeObj[key])];
+		}
+		console.log(teeObj);
+
+
+		res.json( { 
+			teeObject: teeObj,
+		} );
+
+	} catch (err) {
+		console.log(err.message);
+		res.sendStatus(500);
+	}
+	// res.send('Hello /teeapi !');
+};
+
+
+
+
 
 
 // ----- /tees/:tee_id
