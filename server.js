@@ -5,6 +5,9 @@ const PORT = process.env.PORT || 4000;
 
 require('dotenv').config();
 
+var cors = require('cors');
+app.use(cors());		// Enable All CORS Requests
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`)
 })
