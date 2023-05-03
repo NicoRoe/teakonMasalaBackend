@@ -43,11 +43,6 @@ const getSuchKriterien = async (req, res) => {
 
 
 
-
-
-
-
-
 // ----- /teearten
 const getTeeArten = async (req, res) => {
 
@@ -175,60 +170,6 @@ const getAttribute = async (req, res) => {
 // ===== tees ============================================================
 
 
-// ----- /tees/anbaugebiet/:anbaugebiet_id
-const getTeesOneAnbaugebiet = async (req, res) => {
-
-	const { anbaugebiet_id } = req.params;
-	//console.log('params:', req.params);
-
-	try {
-
-		const teesOneAnbaugebietArray = await pool.query(`
-		SELECT tee.id, tee.name, tee.beschreibung, tee.zubereitung 
-			FROM tee 
-			JOIN join_tee_anbaugebiete ON tee.id = join_tee_anbaugebiete.tee_id 
-			JOIN anbaugebiete ON anbaugebiete.id = join_tee_anbaugebiete.anbaugebiet_id 
-			WHERE anbaugebiete.id = $1`, [anbaugebiet_id] );
-
-		// console.log('teesOneAnbaugebietArray', teesOneAnbaugebietArray.rows);
-
-		res.json( { teesOneAnbaugebietArray: teesOneAnbaugebietArray.rows } );
-
-
-		// res.json( [teeArtenArray.rows, teesArray.rows] );
-
-	} catch (err) {
-		console.log(err.message);
-		res.sendStatus(500);
-	}
-};
-
-
-// ----- /tees/anbaugebiet/:anbaugebiet_id
- const getTeesOneArt = async (req, res) => {
-	const { teeart_id } = req.params;
-	// console.log('params:', req.params);
-
-	try {
-
-		const teesOneArtArray = await pool.query(`SELECT * FROM tee	WHERE tee.tee_art_id = $1`, [teeart_id]);
-		//console.log('TeesOneArt', TeesOneArt.rows);
-		
-		res.json( { 
-			teesOneArtArray: teesOneArtArray.rows, 
-		} );
-
-		// res.json( [teeArtenArray.rows, teesArray.rows] );
-
-	} catch (err) {
-		console.log(err.message);
-		res.sendStatus(500);
-	}
-
-		// res.send('Hello /teeapi !');
- };
-
-
 // ----- /tees
 const getTees = async (req, res) => {
 
@@ -248,14 +189,11 @@ const getTees = async (req, res) => {
 };
 
 
-
-
-
 // ----- /tees/:tee_id
 const getTee = async (req, res) => {
 
 	const { tee_id } = req.params;
-	// console.log('params:', req.params);
+	console.log('getTee params:', req.params);
 
 	// https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-inner-join/
 
@@ -264,7 +202,10 @@ const getTee = async (req, res) => {
 		SELECT 
 			
 			tee.id AS teeid, 
-			tee.name AS teename, 
+			tee.name AS teename,
+			tee.beschreibung,
+			tee.zubereitung,
+			tee.image, 
 	
 			attribute.id AS attributeid, 
 			attribute.name AS attributename,
@@ -370,6 +311,65 @@ const getTee = async (req, res) => {
 		res.sendStatus(500);
 	}
 };
+
+ 
+
+
+// ----- /tees/anbaugebiet/:anbaugebiet_id
+const getTeesOneAnbaugebiet = async (req, res) => {
+
+	const { anbaugebiet_id } = req.params;
+	//console.log('params:', req.params);
+
+	try {
+
+		const teesOneAnbaugebietArray = await pool.query(`
+		SELECT tee.id, tee.name, tee.beschreibung, tee.zubereitung 
+			FROM tee 
+			JOIN join_tee_anbaugebiete ON tee.id = join_tee_anbaugebiete.tee_id 
+			JOIN anbaugebiete ON anbaugebiete.id = join_tee_anbaugebiete.anbaugebiet_id 
+			WHERE anbaugebiete.id = $1`, [anbaugebiet_id] );
+
+		// console.log('teesOneAnbaugebietArray', teesOneAnbaugebietArray.rows);
+
+		res.json( { teesOneAnbaugebietArray: teesOneAnbaugebietArray.rows } );
+
+
+		// res.json( [teeArtenArray.rows, teesArray.rows] );
+
+	} catch (err) {
+		console.log(err.message);
+		res.sendStatus(500);
+	}
+};
+
+
+
+
+// ----- /tees/anbaugebiet/:anbaugebiet_id
+const getTeesOneArt = async (req, res) => {
+	const { teeart_id } = req.params;
+	// console.log('params:', req.params);
+
+	try {
+
+		const teesOneArtArray = await pool.query(`SELECT * FROM tee	WHERE tee.tee_art_id = $1`, [teeart_id]);
+		//console.log('TeesOneArt', TeesOneArt.rows);
+		
+		res.json( { 
+			teesOneArtArray: teesOneArtArray.rows, 
+		} );
+
+		// res.json( [teeArtenArray.rows, teesArray.rows] );
+
+	} catch (err) {
+		console.log(err.message);
+		res.sendStatus(500);
+	}
+
+		// res.send('Hello /teeapi !');
+ };
+
 
 
 /* 
