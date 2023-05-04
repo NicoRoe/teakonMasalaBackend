@@ -171,14 +171,18 @@ const getAttribute = async (req, res) => {
 
 
 // ----- /tees
-const getTees = async (req, res) => {
+
+
+ 
+// var.1 - tees ohne join-deteils 
+const getTeesKurz = async (req, res) => {
 
 	try {
 		const teesArray = await pool.query('SELECT * FROM tee');
 		//console.log('teesArray', teesArray.rows);
 
 		res.json( { 
-			teesArray: teesArray.rows,
+			teesKurzArray: teesArray.rows,
 		} );
 
 	} catch (err) {
@@ -187,6 +191,117 @@ const getTees = async (req, res) => {
 	}
 	// res.send('Hello /teeapi !');
 };
+
+
+// var.2 - inklusiv join-deteils
+const getTees = async (req, res) => {
+
+	try {
+		const resTeesAllData = await pool.query(`SELECT 
+			
+		tee.id AS teeid, 
+		tee.name AS teename,
+		tee.beschreibung AS teebeschreibung,
+		tee.zubereitung AS teezubereitung,
+		tee.image AS teeimage, 
+	
+		attribute.id AS attributeid, 
+		attribute.name AS attributename,
+	
+		anbaugebiete.id AS anbaugebieteid,
+		anbaugebiete.name AS anbaugebietename,
+	
+		aromen.id AS aromenid,
+		aromen.name AS aromenname,
+	
+		benefits.id AS benefitsid,
+		benefits.name AS benefitsname,
+	
+		nebenwirkungen.id AS nebenwirkungenid,
+		nebenwirkungen.name AS nebenwirkungenname,
+	
+		naerhstoffe.id AS naerhstoffeid,
+		naerhstoffe.name AS naerhstoffename
+	
+	
+	FROM 
+		tee
+	
+		JOIN join_tee_attribute ON tee.id = join_tee_attribute.tee_id 
+		JOIN attribute ON attribute.id = join_tee_attribute.attribut_id 
+	
+		JOIN join_tee_anbaugebiete ON join_tee_anbaugebiete.tee_id = tee.id 
+		JOIN anbaugebiete ON anbaugebiete.id = join_tee_anbaugebiete.anbaugebiet_id 
+	
+		JOIN join_tee_aromen ON tee.id = join_tee_aromen.tee_id 
+		JOIN aromen ON aromen.id = join_tee_aromen.aroma_id 
+	
+		JOIN join_tee_benefits ON tee.id = join_tee_benefits.tee_id 
+		JOIN benefits ON benefits.id = join_tee_benefits.benefit_id 
+	
+		JOIN join_tee_nebenwirkungen ON tee.id = join_tee_nebenwirkungen.tee_id 
+		JOIN nebenwirkungen ON nebenwirkungen.id = join_tee_nebenwirkungen.nebenwirkung_id 
+	
+		JOIN join_tee_naehrstoffe ON tee.id = join_tee_naehrstoffe.tee_id 
+		JOIN naerhstoffe ON naerhstoffe.id = join_tee_naehrstoffe.naehrstoff_id 
+
+		`);
+		
+		const rohTeesAllDataArray = resTeesAllData.rows ;
+/* 
+	1	Darjeeling	1	koffeinhaltig	12	Indien	3	muskatell	3	stärken		1	Risiko verursachen	1	Antioxidantien
+	1	Darjeeling	1	koffeinhaltig	12	Indien	3	muskatell	3	stärken		1	Risiko verursachen	2	Fluorid
+	1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	2	Fluorid
+	1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	3	Mangan
+	1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	4	Kalium
+*/
+
+		// objectsArr - id-Objekts mit eingeschaft-arrays mit den doppeleten werten
+		// var obj = { foo: "bar", baz: 42 };
+		// Object.values -> [ 'bar', 42 ]
+		// Object.entries(rest) -> [ ['foo', 'bar'], ['baz', 42] ]
+
+		const objectsArr = Object.values(
+			rohTeesAllDataArray.reduce((acc, { teeid, ...rest }) => {
+			  if (!acc[teeid]) acc[teeid] = { teeid, ...rest };
+			  else Object.entries(rest).forEach(([key, value]) => {
+				 if (Array.isArray(acc[teeid][key])) acc[teeid][key].push(value);
+				 else acc[teeid][key] = [acc[teeid][key], value];
+			  });
+			  return acc;
+			}, {})
+		);
+
+
+		// teesObjectsArray - id-Objekts mit eingeschaft-arrays mit unique werten
+		const teesObjectsArray = [];
+
+		objectsArr.forEach(obj => {
+		  const newObj = {};
+		  for (const prop in obj) {
+			 if (Array.isArray(obj[prop])) {
+				const uniqueArray = [...new Set(obj[prop])];
+				newObj[prop] = uniqueArray;
+			 } else {
+				newObj[prop] = obj[prop];
+			 }
+		  }
+		  teesObjectsArray.push(newObj);
+		});
+
+		res.json( {teesObjectsArray: teesObjectsArray} ); 
+		// res.json( objectsArr ); 
+
+	} catch (err) {
+		console.log(err.message);
+		res.sendStatus(500);
+	}
+	// res.send('Hello /teeapi !');
+};
+
+
+
+
 
 
 // ----- /tees/:tee_id
@@ -386,6 +501,7 @@ client.query('SELECT * FROM tee', function(err, result) {
 
  module.exports = {
 	getSuchKriterien,
+	getTeesKurz,
 	getTees,
 	getTee,
 	getTeesOneAnbaugebiet,
