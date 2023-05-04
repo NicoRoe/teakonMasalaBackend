@@ -231,7 +231,7 @@ const getTees = async (req, res) => {
 	FROM 
 		tee
 
-		JOIN tee_arten ON tee_arten.id = tee.id
+		JOIN tee_arten ON tee_arten.id = tee.tee_art_id
 	
 		JOIN join_tee_attribute ON tee.id = join_tee_attribute.tee_id 
 		JOIN attribute ON attribute.id = join_tee_attribute.attribut_id 
@@ -267,17 +267,20 @@ const getTees = async (req, res) => {
 		{ "teeid": 1, "teename": "Darjeeling", ... }
 		{ "teeid": 1, "teename": "Darjeeling", ... }
 		{ "teeid": 1, "teename": "Darjeeling", ... }
- */
-		// objectsArr - id-Objekts mit eingeschaft-arrays mit den doppeleten werten
 
-		// var obj = { foo: "bar", baz: 42 };
-		// { "teeid": 1, "teename": [ "Darjeeling", "Darjeeling", ...], "teebeschreibung": [ "Wird", "Wird", ... ], ...} 
+	rohTeesAllDataArray.reduce((acc, { teeid, ...rest }) =>	
+		{ teeid, ...rest }
+		
+	objectsArr - id-Objekts mit eingeschaft-arrays mit den doppeleten werten
 
-		// Object.values -> [ 'bar', 42 ]
-		// [  1, [ "Darjeeling", "Darjeeling", ...], [ "Wird", "Wird", ... ], ...  ]
+		var obj = { foo: "bar", baz: 42 };
+		{ "teeid": 1, "teename": [ "Darjeeling", "Darjeeling", ...], "teebeschreibung": [ "Wird", "Wird", ... ], ...} 
 
-		// Object.entries(rest) -> [ ['foo', 'bar'], ['baz', 42] ]
+		Object.values -> [ 'bar', 42 ]
+		[  1, [ "Darjeeling", "Darjeeling", ...], [ "Wird", "Wird", ... ], ...  ]
 
+		Object.entries(rest) -> [ ['foo', 'bar'], ['baz', 42] ]
+*/
 
 
 		const objectsArr = Object.values(
