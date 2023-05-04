@@ -198,13 +198,17 @@ const getTees = async (req, res) => {
 
 	try {
 		const resTeesAllData = await pool.query(`SELECT 
-			
+
 		tee.id AS teeid, 
+
+		tee.tee_art_id AS teetee_art_id,
+		tee_arten.name AS tee_artenname, 
+		
 		tee.name AS teename,
 		tee.beschreibung AS teebeschreibung,
 		tee.zubereitung AS teezubereitung,
 		tee.image AS teeimage, 
-	
+
 		attribute.id AS attributeid, 
 		attribute.name AS attributename,
 	
@@ -226,6 +230,8 @@ const getTees = async (req, res) => {
 	
 	FROM 
 		tee
+
+		JOIN tee_arten ON tee_arten.id = tee.id
 	
 		JOIN join_tee_attribute ON tee.id = join_tee_attribute.tee_id 
 		JOIN attribute ON attribute.id = join_tee_attribute.attribut_id 
@@ -254,14 +260,28 @@ const getTees = async (req, res) => {
 	1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	2	Fluorid
 	1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	3	Mangan
 	1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	4	Kalium
-*/
-
+		
+	rohTeesAllDataArray 
+	[
+		{ "teeid": 1, "teename": "Darjeeling", ... }
+		{ "teeid": 1, "teename": "Darjeeling", ... }
+		{ "teeid": 1, "teename": "Darjeeling", ... }
+		{ "teeid": 1, "teename": "Darjeeling", ... }
+ */
 		// objectsArr - id-Objekts mit eingeschaft-arrays mit den doppeleten werten
+
 		// var obj = { foo: "bar", baz: 42 };
+		// { "teeid": 1, "teename": [ "Darjeeling", "Darjeeling", ...], "teebeschreibung": [ "Wird", "Wird", ... ], ...} 
+
 		// Object.values -> [ 'bar', 42 ]
+		// [  1, [ "Darjeeling", "Darjeeling", ...], [ "Wird", "Wird", ... ], ...  ]
+
 		// Object.entries(rest) -> [ ['foo', 'bar'], ['baz', 42] ]
 
+
+
 		const objectsArr = Object.values(
+
 			rohTeesAllDataArray.reduce((acc, { teeid, ...rest }) => {
 			  if (!acc[teeid]) acc[teeid] = { teeid, ...rest };
 			  else Object.entries(rest).forEach(([key, value]) => {
@@ -291,6 +311,7 @@ const getTees = async (req, res) => {
 
 		res.json( {teesObjectsArray: teesObjectsArray} ); 
 		// res.json( objectsArr ); 
+		// res.json( rohTeesAllDataArray ); 
 
 	} catch (err) {
 		console.log(err.message);
