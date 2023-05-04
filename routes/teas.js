@@ -5,6 +5,7 @@ const teaRouter = express.Router();
 
 const {
 	getSuchKriterien,
+	getTeesKurz,
 	getTees,
 	getTee,
 	getTeesOneAnbaugebiet,
@@ -22,10 +23,14 @@ const {
 
 // teaRouter.get('/', getTeeArten);								//  /teeapi/
 
-teaRouter.get('/suchkriterien', getSuchKriterien);		//  
+teaRouter.get('/suchkriterien', getSuchKriterien);			//  
+
+teaRouter.get('/teeskurz', getTeesKurz);						// only from tee: tee_art_id, id, name, beschreibung, zubereitung, image 
 
 teaRouter.get('/tees', getTees);
 teaRouter.get('/tees/:tee_id', getTee);						// frontend SEO:  tees/:teeName | tees/darjeeling
+
+
 teaRouter.get('/tees/anbaugebiet/:anbaugebiet_id', getTeesOneAnbaugebiet);
 teaRouter.get('/tees/teeart/:teeart_id', getTeesOneArt);		// frontend SEO:  tees/teeart/:teeArtName | tees/teeart/schwarzer-tee  
 

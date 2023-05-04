@@ -175,14 +175,14 @@ const getAttribute = async (req, res) => {
 
  
 // var.1 - tees ohne join-deteils 
-const getTees1 = async (req, res) => {
+const getTeesKurz = async (req, res) => {
 
 	try {
 		const teesArray = await pool.query('SELECT * FROM tee');
 		//console.log('teesArray', teesArray.rows);
 
 		res.json( { 
-			teesArray: teesArray.rows,
+			teesKurzArray: teesArray.rows,
 		} );
 
 	} catch (err) {
@@ -289,7 +289,7 @@ const getTees = async (req, res) => {
 		  teesObjectsArray.push(newObj);
 		});
 
-		res.json( teesObjectsArray ); 
+		res.json( {teesObjectsArray: teesObjectsArray} ); 
 		// res.json( objectsArr ); 
 
 	} catch (err) {
@@ -501,6 +501,7 @@ client.query('SELECT * FROM tee', function(err, result) {
 
  module.exports = {
 	getSuchKriterien,
+	getTeesKurz,
 	getTees,
 	getTee,
 	getTeesOneAnbaugebiet,
