@@ -255,33 +255,55 @@ const getTees = async (req, res) => {
 		
 		const rohTeesAllDataArray = resTeesAllData.rows ;
 /* 
-	1	Darjeeling	1	koffeinhaltig	12	Indien	3	muskatell	3	stärken		1	Risiko verursachen	1	Antioxidantien
-	1	Darjeeling	1	koffeinhaltig	12	Indien	3	muskatell	3	stärken		1	Risiko verursachen	2	Fluorid
-	1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	2	Fluorid
-	1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	3	Mangan
-	1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	4	Kalium
+	database response table:
+		1	Darjeeling	1	koffeinhaltig	12	Indien	3	muskatell	3	stärken		1	Risiko verursachen	1	Antioxidantien
+		1	Darjeeling	1	koffeinhaltig	12	Indien	3	muskatell	3	stärken		1	Risiko verursachen	2	Fluorid
+		1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	2	Fluorid
+		1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	3	Mangan
+		1	Darjeeling	1	koffeinhaltig	12	Indien	2	fruchtig		4	reduzieren	1	Risiko verursachen	4	Kalium
 		
 	rohTeesAllDataArray 
 	[
-		{ "teeid": 1, "teename": "Darjeeling", ... }
-		{ "teeid": 1, "teename": "Darjeeling", ... }
-		{ "teeid": 1, "teename": "Darjeeling", ... }
-		{ "teeid": 1, "teename": "Darjeeling", ... }
+		{ "teeid": 1, "teename": "Darjeeling", "teeimage": "01_dar.jpg", ... }
+		{ "teeid": 1, "teename": "Darjeeling", "teeimage": "01_dar.jpg", ... }
+		{ "teeid": 1, "teename": "Darjeeling", "teeimage": "01_dar.jpg", ... }
+		{ "teeid": 2, "teename": "Assam", "teeimage": "01_ass.jpg", ... }
+		{ "teeid": 2, "teename": "Assam", "teeimage": "01_ass.jpg", ... }
+		...
+	]
 
-	rohTeesAllDataArray.reduce((acc, { teeid, ...rest }) =>	
-		{ teeid, ...rest }
-		
-	objectsArr - id-Objekts mit eingeschaft-arrays mit den doppeleten werten
+	group data of different rows with the same "teeid" into one row with the same "teeid"
+	grouped data goes into properties-arrays of one object with the "teeid" 
 
-		var obj = { foo: "bar", baz: 42 };
-		{ "teeid": 1, "teename": [ "Darjeeling", "Darjeeling", ...], "teebeschreibung": [ "Wird", "Wird", ... ], ...} 
+	rohTeesAllDataArray.reduce((acc, { teeid, ...rest }) 
+		reduce - final result of across all elements of the array - a single value or oject as single value
+		destructuring every element(row-object) with { teeid, ...rest } and transfer to callback:
+			variable:	teeid=1,   		
+			object:		rest={ "teename": "Darjeeling", "teeimage": "01_dar.jpg", ... } 
 
-		Object.values -> [ 'bar', 42 ]
-		[  1, [ "Darjeeling", "Darjeeling", ...], [ "Wird", "Wird", ... ], ...  ]
+		? create an array of data: acc["teeid"]={ rest } - unique objects (rows) with duplicate data
 
-		Object.entries(rest) -> [ ['foo', 'bar'], ['baz', 42] ]
+		if !acc[teeid] not exists -> create array with key teeid-value acc[teeid]={ teeid, ...rest };
+			acc[1]={ "teeid": 1, "teename": "Darjeeling", "teeimage": "01_dar.jpg", ... };
+
+		else - acc[teeid] exists ->	
+
+		Object.entries -> returns an array [key, value]  -> [ ['teename', 'Darjeeling'], ['aromenname', 'vollmundig'], ['aromenname', 'kfäftig'] ]
+
+		else Object.entries( rest ).forEach(([key, value])   - forEach only for "rest" - without "teeid"
+			two dimensional array acc[teeid][key]
+			else if isArray(acc[1]["aromenname"])) exists -> acc[1]["aromenname"].push("vollmundig");
+			else not exists -> create two dimensional [acc[teeid][key], value] ->  [ acc[1]["aromenname"], "kfäftig" ]
+			
+
+	var obj = { foo: "bar", baz: 42 };
+	{ "teeid": 1, "teename": [ "Darjeeling", "Darjeeling", ...], "teebeschreibung": [ "Wird", "Wird", ... ], ...} 
+
+	Object.values -> [ 'bar', 42 ]
+	[  1, ["Darjeeling", "Darjeeling", ...], ["Wird", "Wird", ...], ...  ]
+
+	Object.entries(rest) -> [ ['foo', 'bar'], ['baz', 42] ]
 */
-
 
 		const objectsArr = Object.values(
 
@@ -295,8 +317,49 @@ const getTees = async (req, res) => {
 			}, {})
 		);
 
+/* 
+		acc - object mit eingeschaft als objects mit eingeschaft als arrays mit den doppeleten werten
+		{
+			'1': {
+				teeid: 1,
+				teename: [ "Darjeeling", "Darjeeling", "Darjeeling", ...],
+				aromenname: [ "muskatellartig",  "fruchtig", "blumig", "muskatellartig",  "fruchtig", "blumig", ...],
+				...
+			},
+			{
+			'2': {
+				teeid: 2,
+				...	
+		}
+*/
 
-		// teesObjectsArray - id-Objekts mit eingeschaft-arrays mit unique werten
+
+/* 
+	Object.values  returns an array of property values: 
+		objectsArr - id-Objekts mit eingeschaft als arrays mit den doppeleten werten
+
+	objectsArr [
+		{
+			"teeid": 1,
+			"teename": [ "Darjeeling", "Darjeeling", ... ],
+			"aromenid": [ 3,   2,   1,   3,    2,   1,   3,   2, ...]
+			"aromenname": [  "muskatellartig",  "fruchtig", "blumig", "muskatellartig",  "fruchtig", "blumig", ...  ],
+			...
+			]
+		},
+		{
+			"teeid": 2,
+			...
+		]
+*/
+
+/* 	
+	teesObjectsArray - id-Objekts mit Eingeschaften als arrays mit unique werten:
+		"aromenname": [  "muskatellartig",  "fruchtig", "blumig", "muskatellartig"]
+
+	new Set(obj[prop]) - The Set object lets you store unique values of any type - Remove duplicate elements from an array	
+
+*/
 		const teesObjectsArray = [];
 
 		objectsArr.forEach(obj => {
@@ -311,6 +374,9 @@ const getTees = async (req, res) => {
 		  }
 		  teesObjectsArray.push(newObj);
 		});
+
+
+/*  ##### RESULT ##################################### */
 
 		res.json( {teesObjectsArray: teesObjectsArray} ); 
 		// res.json( objectsArr ); 
