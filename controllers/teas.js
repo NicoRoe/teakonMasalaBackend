@@ -353,13 +353,13 @@ const getTees = async (req, res) => {
 		]
 */
 
-/* 	
-	teesObjectsArray - id-Objekts mit Eingeschaften als arrays mit unique werten:
-		"aromenname": [  "muskatellartig",  "fruchtig", "blumig", "muskatellartig"]
+		/* 	
+			teesObjectsArray - id-Objekts mit Eingeschaften als arrays mit unique werten:
+				"aromenname": [  "muskatellartig",  "fruchtig", "blumig", "muskatellartig"]
 
-	new Set(obj[prop]) - The Set object lets you store unique values of any type - Remove duplicate elements from an array	
+			new Set(obj[prop]) - The Set object lets you store unique values of any type - Remove duplicate elements from an array	
 
-*/
+		*/
 		const teesObjectsArray = [];
 
 		objectsArr.forEach(obj => {
@@ -375,8 +375,25 @@ const getTees = async (req, res) => {
 		  teesObjectsArray.push(newObj);
 		});
 
+		
+		/* alphabetisches Sortieren nach teename */
 
-/*  ##### RESULT ##################################### */
+		teesObjectsArray.sort((a, b) => {
+			const nameA = a.teename[0].toUpperCase(); // ignore upper and lowercase
+			const nameB = b.teename[0].toUpperCase(); // ignore upper and lowercase
+			if (nameA < nameB) {
+				return -1;
+			}
+			if (nameA > nameB) {
+				return 1;
+			}
+
+			// names must be equal
+			return 0;
+		});
+
+
+		/*  ##### RESULT ##################################### */
 
 		res.json( {teesObjectsArray: teesObjectsArray} ); 
 		// res.json( objectsArr ); 
