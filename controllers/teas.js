@@ -231,25 +231,25 @@ const getTees = async (req, res) => {
 	FROM 
 		tee
 
-		JOIN tee_arten ON tee_arten.id = tee.tee_art_id
+		LEFT JOIN tee_arten ON tee_arten.id = tee.tee_art_id
 	
-		JOIN join_tee_attribute ON tee.id = join_tee_attribute.tee_id 
-		JOIN attribute ON attribute.id = join_tee_attribute.attribut_id 
+		LEFT JOIN join_tee_attribute ON tee.id = join_tee_attribute.tee_id 
+		LEFT JOIN attribute ON attribute.id = join_tee_attribute.attribut_id 
 	
-		JOIN join_tee_anbaugebiete ON join_tee_anbaugebiete.tee_id = tee.id 
-		JOIN anbaugebiete ON anbaugebiete.id = join_tee_anbaugebiete.anbaugebiet_id 
+		LEFT JOIN join_tee_anbaugebiete ON join_tee_anbaugebiete.tee_id = tee.id 
+		LEFT JOIN anbaugebiete ON anbaugebiete.id = join_tee_anbaugebiete.anbaugebiet_id 
 	
-		JOIN join_tee_aromen ON tee.id = join_tee_aromen.tee_id 
-		JOIN aromen ON aromen.id = join_tee_aromen.aroma_id 
+		LEFT JOIN join_tee_aromen ON tee.id = join_tee_aromen.tee_id 
+		LEFT JOIN aromen ON aromen.id = join_tee_aromen.aroma_id 
 	
-		JOIN join_tee_benefits ON tee.id = join_tee_benefits.tee_id 
-		JOIN benefits ON benefits.id = join_tee_benefits.benefit_id 
+		LEFT JOIN join_tee_benefits ON tee.id = join_tee_benefits.tee_id 
+		LEFT JOIN benefits ON benefits.id = join_tee_benefits.benefit_id 
 	
-		JOIN join_tee_nebenwirkungen ON tee.id = join_tee_nebenwirkungen.tee_id 
-		JOIN nebenwirkungen ON nebenwirkungen.id = join_tee_nebenwirkungen.nebenwirkung_id 
+		LEFT JOIN join_tee_nebenwirkungen ON tee.id = join_tee_nebenwirkungen.tee_id 
+		LEFT JOIN nebenwirkungen ON nebenwirkungen.id = join_tee_nebenwirkungen.nebenwirkung_id 
 	
-		JOIN join_tee_naehrstoffe ON tee.id = join_tee_naehrstoffe.tee_id 
-		JOIN naerhstoffe ON naerhstoffe.id = join_tee_naehrstoffe.naehrstoff_id 
+		LEFT JOIN join_tee_naehrstoffe ON tee.id = join_tee_naehrstoffe.tee_id 
+		LEFT JOIN naerhstoffe ON naerhstoffe.id = join_tee_naehrstoffe.naehrstoff_id 
 
 		`);
 		
@@ -418,6 +418,7 @@ const getTee = async (req, res) => {
 	console.log('getTee params:', req.params);
 
 	// https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-inner-join/
+	// INNER is the default
 
 	try {
 		const teeAllDeteils = await pool.query(`
@@ -449,23 +450,23 @@ const getTee = async (req, res) => {
 	
 			FROM tee
 	
-				JOIN join_tee_attribute ON tee.id = join_tee_attribute.tee_id 
-				JOIN attribute ON attribute.id = join_tee_attribute.attribut_id 
+				LEFT JOIN join_tee_attribute ON tee.id = join_tee_attribute.tee_id 
+				LEFT JOIN attribute ON attribute.id = join_tee_attribute.attribut_id 
 	
-				JOIN join_tee_anbaugebiete ON join_tee_anbaugebiete.tee_id = tee.id 
-				JOIN anbaugebiete ON anbaugebiete.id = join_tee_anbaugebiete.anbaugebiet_id 
+				LEFT JOIN join_tee_anbaugebiete ON join_tee_anbaugebiete.tee_id = tee.id 
+				LEFT JOIN anbaugebiete ON anbaugebiete.id = join_tee_anbaugebiete.anbaugebiet_id 
 	
-				JOIN join_tee_aromen ON tee.id = join_tee_aromen.tee_id 
-				JOIN aromen ON aromen.id = join_tee_aromen.aroma_id 
+				LEFT JOIN join_tee_aromen ON tee.id = join_tee_aromen.tee_id 
+				LEFT JOIN aromen ON aromen.id = join_tee_aromen.aroma_id 
 	
-				JOIN join_tee_benefits ON tee.id = join_tee_benefits.tee_id 
-				JOIN benefits ON benefits.id = join_tee_benefits.benefit_id 
+				LEFT JOIN join_tee_benefits ON tee.id = join_tee_benefits.tee_id 
+				LEFT JOIN benefits ON benefits.id = join_tee_benefits.benefit_id 
 	
-				JOIN join_tee_nebenwirkungen ON tee.id = join_tee_nebenwirkungen.tee_id 
-				JOIN nebenwirkungen ON nebenwirkungen.id = join_tee_nebenwirkungen.nebenwirkung_id 
+				LEFT JOIN join_tee_nebenwirkungen ON tee.id = join_tee_nebenwirkungen.tee_id 
+				LEFT JOIN nebenwirkungen ON nebenwirkungen.id = join_tee_nebenwirkungen.nebenwirkung_id 
 	
-				JOIN join_tee_naehrstoffe ON tee.id = join_tee_naehrstoffe.tee_id 
-				JOIN naerhstoffe ON naerhstoffe.id = join_tee_naehrstoffe.naehrstoff_id 
+				LEFT JOIN join_tee_naehrstoffe ON tee.id = join_tee_naehrstoffe.tee_id 
+				LEFT JOIN naerhstoffe ON naerhstoffe.id = join_tee_naehrstoffe.naehrstoff_id 
 	
 	
 			WHERE tee.id = $1`, [tee_id] );
