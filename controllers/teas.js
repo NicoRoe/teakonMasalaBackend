@@ -18,7 +18,8 @@ const getSuchKriterien = async (req, res) => {
 		SELECT 
 
 			DISTINCT anbaugebiete.id,
-			anbaugebiete.name
+			anbaugebiete.name,
+			anbaugebiete.karte
 
 		FROM 
 			anbaugebiete
@@ -126,7 +127,8 @@ const getAnbaugebiete = async (req, res, next) => {
 		SELECT 
 
 			DISTINCT anbaugebiete.id,
-			anbaugebiete.name
+			anbaugebiete.name,
+			anbaugebiete.karte
 
 		FROM 
 			anbaugebiete
