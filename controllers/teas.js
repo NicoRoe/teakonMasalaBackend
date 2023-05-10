@@ -3,6 +3,8 @@ const pool  = require("../db-pool");
 
 
 // ----- /suchkriterien
+// ----- /anbaugebiete - nur Gebiete, in denen wir Tee in der Datenbank haben
+
 const getSuchKriterien = async (req, res) => {
 
 	try {
@@ -11,7 +13,19 @@ const getSuchKriterien = async (req, res) => {
 		const teeArtenArray = await pool.query('SELECT * FROM tee_arten');
 		//console.log('teeArtenArray', teeArtenArray.rows);
 
-		const anbaugebieteArray = await pool.query('SELECT * FROM anbaugebiete');
+		const anbaugebieteArray = await pool.query(`
+		
+		SELECT 
+
+			DISTINCT anbaugebiete.id,
+			anbaugebiete.name
+
+		FROM 
+			anbaugebiete
+
+		INNER JOIN join_tee_anbaugebiete ON join_tee_anbaugebiete.anbaugebiet_id = anbaugebiete.id 
+
+		`);
 		//console.log('anbaugebieteArray', anbaugebieteArray.rows);
 
 		const benefitsArray = await pool.query('SELECT * FROM benefits');
@@ -97,12 +111,28 @@ const getTeeArten = async (req, res) => {
 
 
 
-// ----- /anbaugebiete
+
+
+
+
+
+// ----- /anbaugebiete - nur Gebiete, in denen wir Tee in der Datenbank haben
 const getAnbaugebiete = async (req, res, next) => {
 
 	try {
 
-		const anbaugebieteArray = await pool.query('SELECT * FROM anbaugebiete');
+		const anbaugebieteArray = await pool.query(`
+		
+		SELECT 
+
+			DISTINCT anbaugebiete.id,
+			anbaugebiete.name
+
+		FROM 
+			anbaugebiete
+
+			INNER JOIN join_tee_anbaugebiete ON join_tee_anbaugebiete.anbaugebiet_id = anbaugebiete.id 
+		`);
 		//console.log('anbaugebieteArray', anbaugebieteArray.rows);
 
 		res.json( { anbaugebieteArray: anbaugebieteArray.rows } );
@@ -112,6 +142,29 @@ const getAnbaugebiete = async (req, res, next) => {
 		res.sendStatus(500);
 	}
 };
+
+// ----- /anbaugebiete-alle
+const getAnbaugebieteAll = async (req, res, next) => {
+
+	try {
+
+		const anbaugebieteArray = await pool.query('SELECT * FROM anbaugebiete');
+		//console.log('anbaugebieteArray', anbaugebieteArray.rows);
+
+		res.json( { anbaugebieteAlleArray: anbaugebieteAlleArray.rows } );
+
+	} catch (err) {
+		console.log(err.message);
+		res.sendStatus(500);
+	}
+};
+
+
+
+
+
+
+
 
 
 
